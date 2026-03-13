@@ -6,3 +6,4 @@ dist/
 .env
 firebase-service-account*.json
 calendar_data.json
+.vercel

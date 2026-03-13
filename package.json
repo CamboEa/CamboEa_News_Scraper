@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "postinstall": "npx playwright install chromium",
     "dev": "tsx watch src/server.ts",
     "serve": "tsx src/server.ts",
     "scrape": "tsx src/index.ts",

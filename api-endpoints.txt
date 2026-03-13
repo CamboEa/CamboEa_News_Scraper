@@ -1,0 +1,133 @@
+Forex Factory Calendar Scraper – API Endpoints
+
+Base URL (local development)
+--------------------------------
+- http://localhost:3333
+
+If you change the PORT in .env, replace 3333 with your chosen port.
+
+
+1. GET /api/events
+--------------------------------
+- **Purpose**: Fetch all events currently stored in Firebase.
+- **URL**: GET /api/events
+- **Query params**: none
+- **Response (JSON)**:
+  {
+    "count": number,        // total number of events
+    "events": CalendarEvent[]
+  }
+
+CalendarEvent shape:
+  {
+    "title": string,
+    "country": string,      // currency code, e.g. "USD", "JPY"
+    "date": string,         // ISO string, e.g. "2026-03-08T19:30:00-04:00"
+    "impact": string,       // "High" | "Medium" | "Low" | "Holiday"
+    "actual": string,
+    "forecast": string,
+    "previous": string,
+    "detail": {
+      "usual_effect": string,
+      "frequency": string,
+      "next_release": string
+    } | null
+  }
+
+Example (from browser or other site):
+  fetch("http://localhost:3333/api/events")
+    .then(r => r.json())
+    .then(data => console.log(data.events));
+
+
+2. GET /api/events/high-impact
+--------------------------------
+- **Purpose**: Fetch only “High” impact events.
+- **URL**: GET /api/events/high-impact
+- **Query params**: none
+- **Response**: same structure as /api/events but filtered to impact === "High".
+
+Example:
+  fetch("http://localhost:3333/api/events/high-impact")
+    .then(r => r.json())
+    .then(data => {
+      console.log("High impact count:", data.count);
+    });
+
+
+3. GET /api/events/by-country/:code
+--------------------------------
+- **Purpose**: Fetch events for a specific currency/country code.
+- **URL**: GET /api/events/by-country/:code
+- **Path param**:
+  - :code – currency code (case-insensitive). Examples: USD, EUR, GBP, JPY.
+- **Response**: same structure as /api/events but filtered to that currency.
+
+Examples:
+  // All USD events
+  fetch("http://localhost:3333/api/events/by-country/USD");
+
+  // All JPY events
+  fetch("http://localhost:3333/api/events/by-country/jpy");
+
+
+4. GET /api/status
+--------------------------------
+- **Purpose**: Check scrape status and last-scrape metadata.
+- **URL**: GET /api/status
+- **Query params**: none
+- **Response (JSON)**:
+  {
+    "scraping": boolean,         // true while a scrape is running
+    "lastScrapeAt": string|null, // ISO timestamp of last save to Firebase
+    "eventCount": number         // events stored in Firebase
+  }
+
+Example:
+  fetch("http://localhost:3333/api/status")
+    .then(r => r.json())
+    .then(console.log);
+
+
+5. POST /api/scrape
+--------------------------------
+- **Purpose**: Trigger a new scrape and save results to Firebase.
+- **URL**: POST /api/scrape
+- **Body (JSON)**:
+  {
+    "details": boolean   // true = scrape with details, false/omitted = quick
+  }
+
+- **Behavior**:
+  - If a scrape is already running, returns HTTP 409:
+    { "error": "A scrape is already in progress" }
+  - On success:
+    {
+      "success": true,
+      "count": number,      // events scraped
+      "withDetails": bool,  // matches your “details” flag
+      "events": CalendarEvent[]
+    }
+
+Examples:
+  // Quick scrape (faster, no solo-page details)
+  fetch("http://localhost:3333/api/scrape", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ details: false })
+  });
+
+  // Full scrape with details (slower, opens each event page)
+  fetch("http://localhost:3333/api/scrape", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ details: true })
+  });
+
+
+6. UI Endpoint
+--------------------------------
+- **URL**: GET /
+- **Purpose**: Serves the built-in UI at:
+  http://localhost:3333/
+

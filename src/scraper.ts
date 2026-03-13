@@ -15,7 +15,6 @@ const IMPACT_MAP: Record<string, string> = {
 async function createStealthContext() {
   const browser = await chromium.launch({
     headless: true,
-    channel: "chrome",
     args: ["--disable-blink-features=AutomationControlled"],
   });
 
