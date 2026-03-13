@@ -1,0 +1,28 @@
+{
+  "name": "cambo-ea-scrap",
+  "version": "1.0.0",
+  "description": "Forex Factory economic calendar scraper",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "serve": "tsx src/server.ts",
+    "scrape": "tsx src/index.ts",
+    "scrape:details": "tsx src/index.ts --details",
+    "scrape:pretty": "tsx src/index.ts --pretty"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^5.1.0",
+    "firebase": "^12.10.0",
+    "playwright": "^1.50.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
