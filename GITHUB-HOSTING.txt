@@ -1,0 +1,115 @@
+Step-by-step: Host on GitHub (Pages + Actions)
+==============================================
+
+Step 1 – Create a GitHub repository
+------------------------------------
+1. Go to https://github.com/new
+2. Repository name: e.g. cambo_ea_scrap (or any name you like)
+3. Choose Public (or Private if you prefer)
+4. Do NOT add a README, .gitignore, or license (you already have these)
+5. Click Create repository
+
+
+Step 2 – Push your code to GitHub
+---------------------------------
+In your project folder (cambo_ea_scrap), run in the terminal:
+
+  cd /path/to/cambo_ea_scrap
+
+  git init
+  git add .
+  git commit -m "Initial commit: scraper + UI + GitHub workflows"
+  git branch -M main
+  git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+  git push -u origin main
+
+Replace YOUR_USERNAME with your GitHub username and YOUR_REPO_NAME with the repo name from Step 1.
+
+
+Step 3 – Add repository secrets (Firebase config)
+-------------------------------------------------
+1. On GitHub, open your repository
+2. Click Settings (top menu of the repo)
+3. In the left sidebar, click Secrets and variables → Actions
+4. Click "New repository secret" and add each of these, one by one:
+
+   Name: FIREBASE_API_KEY
+   Value: (paste from your .env – the value of FIREBASE_API_KEY)
+
+   Name: FIREBASE_AUTH_DOMAIN
+   Value: (paste from your .env)
+
+   Name: FIREBASE_PROJECT_ID
+   Value: (paste from your .env)
+
+   Name: FIREBASE_STORAGE_BUCKET
+   Value: (paste from your .env)
+
+   Name: FIREBASE_MESSAGING_SENDER_ID
+   Value: (paste from your .env)
+
+   Name: FIREBASE_APP_ID
+   Value: (paste from your .env)
+
+You should end up with 6 secrets. These are used by both the scraper and the Pages deploy workflow.
+
+
+Step 4 – Turn on GitHub Pages
+-----------------------------
+1. Still in your repo, go to Settings
+2. In the left sidebar, click Pages
+3. Under "Build and deployment":
+   - Source: choose "GitHub Actions"
+4. You do not need to pick a branch or folder; the workflow will publish the site.
+
+Your site will be available at:
+  https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+
+
+Step 5 – Run the deploy workflow (publish the UI)
+------------------------------------------------
+1. Click the "Actions" tab in your repo
+2. In the left sidebar, click "Deploy to GitHub Pages"
+3. Click "Run workflow" (right side), then "Run workflow" in the green box
+4. Wait until the run shows a green tick (about 1–2 minutes)
+5. Open: https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+   You should see the calendar UI. It may show "No data yet" until the scraper has run.
+
+
+Step 6 – Run the scraper (fill Firebase with data)
+---------------------------------------------------
+1. In the Actions tab, click "Scrape ForexFactory → Firebase"
+2. Click "Run workflow", then "Run workflow" again
+3. This run takes about 2 minutes (it opens the site and saves events to Firebase)
+4. When it finishes with a green tick, go back to your Pages site and click "Refresh Data"
+   You should now see the calendar events.
+
+
+Step 7 – Optional: change how often the scraper runs
+----------------------------------------------------
+1. In your repo, open the file: .github/workflows/scrape.yml
+2. Find the line: - cron: "0 * * * *"
+   That means "every hour at minute 0". You can change it, for example:
+   - "0 */6 * * *"  = every 6 hours
+   - "0 0 * * *"    = once a day at midnight (UTC)
+3. Save and push to main. The new schedule will apply automatically.
+
+
+Summary – What lives where
+--------------------------
+- Your code: GitHub repo
+- UI (website): GitHub Pages (Actions deploy the "public" folder)
+- Data: Firebase (Firestore). The UI on Pages reads from Firebase.
+- Scraper: GitHub Actions (runs on schedule or when you click "Run workflow")
+
+If your default branch is "master" instead of "main"
+----------------------------------------------------
+Open .github/workflows/deploy-pages.yml and change:
+
+  branches: ["main"]
+
+to:
+
+  branches: ["master"]
+
+Then push. Deploy and scrape workflows will run on push to master.
