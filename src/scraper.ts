@@ -1,5 +1,5 @@
-import { chromium, type BrowserContext, type Page } from "playwright";
-import type { CalendarEvent, EmbeddedEvent, EventDetail } from "./types.js";
+import { chromium as playwrightChromium, type Page } from "playwright-core";
+import type { CalendarEvent, EventDetail } from "./types.js";
 
 const CALENDAR_URL = "https://www.forexfactory.com/calendar";
 const BASE_URL = "https://www.forexfactory.com";
@@ -13,10 +13,19 @@ const IMPACT_MAP: Record<string, string> = {
 };
 
 async function createStealthContext() {
-  const browser = await chromium.launch({
+  const isVercel = process.env.VERCEL === "1";
+  const launchOptions: Parameters<typeof playwrightChromium.launch>[0] = {
     headless: true,
     args: ["--disable-blink-features=AutomationControlled"],
-  });
+  };
+
+  if (isVercel) {
+    const chromium = await import("@sparticuz/chromium");
+    launchOptions.executablePath = await chromium.default.executablePath();
+    launchOptions.args = chromium.default.args;
+  }
+
+  const browser = await playwrightChromium.launch(launchOptions);
 
   const context = await browser.newContext({
     userAgent:
