@@ -59,8 +59,11 @@ Step 4 – Turn on GitHub Pages
 1. Still in your repo, go to Settings
 2. In the left sidebar, click Pages
 3. Under "Build and deployment":
-   - Source: choose "GitHub Actions"
-4. You do not need to pick a branch or folder; the workflow will publish the site.
+   - Source: choose "Deploy from a branch"
+   - Branch: select "gh-pages" and "/ (root)"
+   - Click Save
+
+(After the first successful run of "Deploy to GitHub Pages" in Actions, the gh-pages branch will exist. If you don't see it yet, run the workflow first in Step 5, then come back and set Branch to gh-pages.)
 
 Your site will be available at:
   https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
@@ -71,8 +74,9 @@ Step 5 – Run the deploy workflow (publish the UI)
 1. Click the "Actions" tab in your repo
 2. In the left sidebar, click "Deploy to GitHub Pages"
 3. Click "Run workflow" (right side), then "Run workflow" in the green box
-4. Wait until the run shows a green tick (about 1–2 minutes)
-5. Open: https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+4. Wait until the run shows a green tick (about 1 minute). This creates the gh-pages branch with your site.
+5. If you skipped Step 4: go to Settings → Pages, set Source to "Deploy from a branch", Branch to "gh-pages", folder "/ (root)", Save.
+6. Open: https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
    You should see the calendar UI. It may show "No data yet" until the scraper has run.
 
 
