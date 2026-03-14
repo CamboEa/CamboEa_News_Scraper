@@ -44,6 +44,10 @@ Step 4 – Turn on GitHub Pages
 Your site will be available at:
   https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
 
+If you see "404 File not found":
+- Go to Settings → Pages. Under "Build and deployment" set Branch to "gh-pages" and Folder to "/ (root)". Save.
+- Make sure the "Deploy to GitHub Pages" workflow has run successfully (Actions tab). The gh-pages branch must exist and contain index.html.
+
 
 Step 5 – Run the deploy workflow (publish the UI)
 ------------------------------------------------
