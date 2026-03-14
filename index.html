@@ -407,27 +407,36 @@
     </div>
   </div>
 
-  <script src="config.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
   <script>
-    let allEvents = [];
-    let activeFilter = "all";
-    let firestoreDb = null;
-
-    if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey) {
+    (async function() {
       try {
-        firebase.initializeApp(window.FIREBASE_CONFIG);
-        firestoreDb = firebase.firestore();
-      } catch (e) {
-        console.warn("Firebase init failed", e);
+        var r = await fetch('config.js');
+        var text = await r.text();
+        if (r.ok && text.trim().indexOf('<') !== 0) {
+          (function(){ eval(text); })();
+        }
+      } catch (e) { console.warn('config.js not loaded', e); }
+
+      var allEvents = [];
+      var activeFilter = "all";
+      var firestoreDb = null;
+
+      if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey) {
+        try {
+          firebase.initializeApp(window.FIREBASE_CONFIG);
+          firestoreDb = firebase.firestore();
+        } catch (e) {
+          console.warn("Firebase init failed", e);
+        }
+        var sel = document.querySelector(".controls .mode-selector");
+        if (sel) sel.remove();
+        var scrapeBtn = document.getElementById("scrape-btn");
+        if (scrapeBtn) {
+          scrapeBtn.replaceWith(document.createTextNode("Data is updated by GitHub Actions (see Actions tab)."));
+        }
       }
-      document.querySelector(".mode-selector")?.closest(".controls")?.querySelector(".mode-selector")?.remove();
-      var scrapeBtn = document.getElementById("scrape-btn");
-      if (scrapeBtn) {
-        scrapeBtn.replaceWith(document.createTextNode("Data is updated by GitHub Actions (see Actions tab)."));
-      }
-    }
 
     function formatDate(iso) {
       const d = new Date(iso);
@@ -537,8 +546,13 @@
           });
         } else {
           const res = await fetch("/api/events");
-          const data = await res.json();
-          allEvents = data.events;
+          const text = await res.text();
+          if (!res.ok || text.trim().indexOf('<') === 0) {
+            setStatus("Events API not available (use Firebase config or run the server locally).", true);
+            return;
+          }
+          var data = JSON.parse(text);
+          allEvents = data.events || [];
         }
         updateStats(allEvents);
         buildFilters(allEvents);
@@ -583,7 +597,10 @@
       }
     }
 
+    window.loadEvents = loadEvents;
+    window.startScrape = startScrape;
     loadEvents();
+    })();
   </script>
 </body>
 </html>
