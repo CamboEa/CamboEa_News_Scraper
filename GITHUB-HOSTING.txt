@@ -26,33 +26,9 @@ In your project folder (cambo_ea_scrap), run in the terminal:
 Replace YOUR_USERNAME with your GitHub username and YOUR_REPO_NAME with the repo name from Step 1.
 
 
-Step 3 – Add repository secrets (Firebase config)
--------------------------------------------------
-1. On GitHub, open your repository
-2. Click Settings (top menu of the repo)
-3. In the left sidebar, click Secrets and variables → Actions
-4. Click "New repository secret" and add each of these, one by one:
-
-   Name: FIREBASE_API_KEY
-   Value: (paste from your .env – the value of FIREBASE_API_KEY)
-
-   Name: FIREBASE_AUTH_DOMAIN
-   Value: (paste from your .env)
-
-   Name: FIREBASE_PROJECT_ID
-   Value: (paste from your .env)
-
-   Name: FIREBASE_STORAGE_BUCKET
-   Value: (paste from your .env)
-
-   Name: FIREBASE_MESSAGING_SENDER_ID
-   Value: (paste from your .env)
-
-   Name: FIREBASE_APP_ID
-   Value: (paste from your .env)
-
-You should end up with 6 secrets. These are used by both the scraper and the Pages deploy workflow.
-
+Step 3 – Secrets in the Firebase environment
+---------------------------------------------
+The workflows use the "Firebase" environment. Put all secrets there: Settings → Environments → Firebase. You need the 6 Firebase keys plus GH_PAT (Personal Access Token, scope "repo") for deploy. Create GH_PAT under profile → Settings → Developer settings → Personal access tokens.
 
 Step 4 – Turn on GitHub Pages
 -----------------------------
