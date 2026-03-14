@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create config.js for Firebase (from secrets)
+      - name: Prepare site (root index + config)
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
@@ -23,6 +23,8 @@ jobs:
           FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
         run: |
+          mkdir -p _site
+          cp index.html .nojekyll _site/
           node -e "
           const c = {
             apiKey: process.env.FIREBASE_API_KEY,
@@ -32,12 +34,12 @@ jobs:
             messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
             appId: process.env.FIREBASE_APP_ID
           };
-          require('fs').writeFileSync('public/config.js', 'window.FIREBASE_CONFIG = ' + JSON.stringify(c) + ';');
+          require('fs').writeFileSync('_site/config.js', 'window.FIREBASE_CONFIG = ' + JSON.stringify(c) + ';');
           "
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_PAT }}
-          publish_dir: ./public
+          publish_dir: ./_site
           force_orphan: true

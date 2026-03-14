@@ -19,9 +19,12 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3333;
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(join(ROOT, "public")));
 
 let scraping = false;
+
+app.get("/", (_req, res) => {
+  res.sendFile(join(ROOT, "index.html"));
+});
 
 // Firebase config for local dev (so UI works with Express or static + Firebase)
 app.get("/config.js", (_req, res) => {
