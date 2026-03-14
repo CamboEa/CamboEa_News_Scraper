@@ -500,10 +500,23 @@
       btn.textContent = showing ? "details" : "hide";
     }
 
+    async function parseJsonOrText(res) {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        return null;
+      }
+    }
+
     async function loadEvents() {
       try {
         const res = await fetch("/api/events");
-        const data = await res.json();
+        const data = await parseJsonOrText(res);
+        if (!data || !data.events) {
+          setStatus("Failed to load events", true);
+          return;
+        }
         allEvents = data.events;
         updateStats(allEvents);
         buildFilters(allEvents);
@@ -529,12 +542,17 @@
           body: JSON.stringify({ details: withDetails }),
         });
 
+        const data = await parseJsonOrText(res);
+
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Scrape failed");
+          const msg = data?.error || (res.status === 504 ? "Request timed out. The scrape may take longer than the server allows—try again or use a quicker run without details." : "Scrape failed");
+          throw new Error(msg);
         }
 
-        const data = await res.json();
+        if (!data || !data.events) {
+          throw new Error("Invalid response from server");
+        }
+
         allEvents = data.events;
         updateStats(allEvents);
         buildFilters(allEvents);
