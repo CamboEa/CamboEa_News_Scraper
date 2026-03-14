@@ -1,0 +1,1 @@
+window.FIREBASE_CONFIG = {"apiKey":"AIzaSyBktgR12TrUKBtRwRlSq0aZg-6lfhFbN5o","authDomain":"blessing168-8885d.firebaseapp.com","projectId":"blessing168-8885d","storageBucket":"blessing168-8885d.firebasestorage.app","messagingSenderId":"1037791062079","appId":"1:1037791062079:web:561d25fc52975ae84ef08a"};
