@@ -7,5 +7,3 @@ dist/
 firebase-service-account*.json
 calendar_data.json
 .vercel
-public/config.js
-_site/
