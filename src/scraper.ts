@@ -3,7 +3,7 @@ import type { CalendarEvent, EmbeddedEvent, EventDetail } from "./types.js";
 
 const CALENDAR_URL = "https://www.forexfactory.com/calendar";
 const BASE_URL = "https://www.forexfactory.com";
-const TIMEZONE = "America/New_York";
+const TIMEZONE = "Asia/Bangkok"; // UTC+7
 
 const IMPACT_MAP: Record<string, string> = {
   "High Impact Expected": "High",

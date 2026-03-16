@@ -413,10 +413,14 @@
 
     function formatDate(iso) {
       const d = new Date(iso);
-      const mon = d.toLocaleString("en-US", { month: "short" });
-      const day = d.getDate();
-      const time = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-      return `${mon} ${day}, ${time}`;
+      return d.toLocaleString("en-US", {
+        timeZone: "Asia/Bangkok",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      });
     }
 
     function setStatus(msg, isError = false) {
